@@ -14,11 +14,20 @@ const bookSchema = new Schema({
         type: Date,
         required: [true, "Publish date is required."]
     },
-    thumbnail: String,
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    }
+    thumbnail: {
+        type: String,
+        get: (v) => {
+            let baseUrl = process.env.APP_URL;
+            if (!baseUrl.endsWith('/')) {
+                baseUrl = baseUrl + '/';
+            }
+            return baseUrl + v;
+        }
+    },
+}, {
+    timestamps: true,
+    toJSON: { getters: true }
 });
+
 
 module.exports = mongoose.model('Book', bookSchema);

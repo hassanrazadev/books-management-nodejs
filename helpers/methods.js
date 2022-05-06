@@ -31,11 +31,12 @@ exports.failResponse = ( message, payload = null ) => {
 
 /**
  * send not found response
+ * @param message
  * @returns {{message: string, status: boolean}}
  */
-exports.notFoundResponse = () => {
+exports.notFoundResponse = (message = "Unable to find the requested resource.") => {
     return {
         status: false,
-        message: "Unable to find the requested resource."
+        message: message
     }
 }

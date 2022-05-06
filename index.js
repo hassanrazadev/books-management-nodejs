@@ -2,8 +2,9 @@ const express = require('express'),
     app = express();
 const mongoose = require("mongoose");
 const notFoundResponse = require('./helpers/methods').notFoundResponse;
-const bodyParser = require('body-parser');
+const apiRoutes = require('./routes/api.route')
 require('dotenv').config();
+
 
 // ==================== connect database (mongodb) =================== //
 mongoose
@@ -16,17 +17,21 @@ mongoose
     });
 // ================================================================== //
 
-process.on('unhandledRejection', error => {
+process.on('unhandledRejection',  error => {
     console.log('unhandledRejection', error.message);
 })
 
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: false
+}));
+
 // express routes
 app.use('/api', require('./routes/auth.route'));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use('/api', apiRoutes.publicRouter);
+app.use('/api', apiRoutes.privateRouter);
+// serve static content
+app.use('/uploads', express.static('uploads'));
 
 app.listen(process.env.APP_PORT || 8888, () => {
     console.log(`Server is live on port ${process.env.APP_PORT}`)
